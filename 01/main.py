@@ -20,5 +20,18 @@ def pt1():
     print(total)
 
 
+def pt2():
+    f = read_input()
+    left, right = zip(*[split(s) for s in f.split(("\n")) if s != ""])
+    counts = {}
+    for n in right:
+        num = int(n)
+        counts[num] = counts.get(num, 0) + 1
+
+    sim = [int(x) * counts.get(int(x), 0) for x in left]
+    total = sum(sim)
+    print(total)
+
+
 if __name__ == "__main__":
-    pt1()
+    pt2()
