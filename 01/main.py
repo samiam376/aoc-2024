@@ -2,14 +2,19 @@ import os
 
 
 def read_input():
-    with open("01/example-input.txt", "r") as file:
+    with open("01/input.txt", "r") as file:
         content = file.read()
         return content
 
 
+def split(s: str):
+    l, r = s.split("  ")
+    return (l, r)
+
+
 def pt1():
     f = read_input()
-    left, right = zip(*[(s[0], s[-1]) for s in f.split(("\n")) if s != ""])
+    left, right = zip(*[split(s) for s in f.split(("\n")) if s != ""])
     dist = [abs(int(x) - int(y)) for x, y in zip(sorted(left), sorted(right))]
     total = sum(dist)
     print(total)
