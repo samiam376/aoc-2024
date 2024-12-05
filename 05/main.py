@@ -1,3 +1,4 @@
+import enum
 from typing import Mapping
 
 
@@ -61,9 +62,70 @@ def pt1():
     print(sum(map(int, mids)))
 
 
+def is_valid(update, rule_map):
+    seen = set()
+    for u in update:
+        # if we've seen the value that must come before it's invalid
+        after = rule_map.get(u)
+        if after and any(map(lambda a: a in seen, after)):
+            return False
+        seen.add(u)
+
+    return True
+
+
 def pt2():
-    pass
+    """
+    Find the updates which are not in the correct order.
+    What do you get if you add up the middle page numbers after correctly ordering just those updates?
+    """
+
+    content = read_input(False)
+    rules = []
+    updates = []
+    for val in content.split("\n"):
+        if "|" in val:
+            rules.append(val.split("|"))
+        elif "," in val:
+            updates.append(val.split(","))
+
+    rule_map: Mapping[str, list[str]] = {}
+    for r in rules:
+        fst, snd = r
+        if fst in rule_map:
+            rule_map[fst].append(snd)
+        else:
+            rule_map[fst] = [snd]
+
+    invalid_updates = []
+    for update in updates:
+        valid = is_valid(update, rule_map)
+        if not valid:
+            invalid_updates.append(update)
+
+    fixed = []
+    for inv in invalid_updates:
+        sorted_update = inv
+        while not is_valid(sorted_update, rule_map):
+            seen = set()
+            for u in inv:
+                seen.add((u))
+                rule = rule_map.get(u)
+                if rule:
+                    to_fix = next(filter(lambda a: a in seen, rule), None)
+                    if to_fix:
+                        for idx, val in enumerate(sorted_update):
+                            if val == to_fix:
+                                sorted_update[idx] = u
+
+                            if val == u:
+                                sorted_update[idx] = to_fix
+
+        fixed.append((sorted_update))
+
+    mids = [update[mid(len(update))] for update in fixed]
+    print(sum(map(int, mids)))
 
 
 if __name__ == "__main__":
-    pt1()
+    pt2()
