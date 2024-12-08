@@ -84,9 +84,69 @@ def pt1():
     print(count)
 
 
+def check_cycle(grid, start, max_path):
+    path = []
+    dir = (-1, 0)
+    current = start
+    last = None
+    while current in grid:
+        if len(path) > max_path:
+            return True
+
+        char = grid[current]
+        if char == "#":
+            assert last is not None
+            current = last
+            dir = rotate(dir)
+        else:
+            path.append(current)
+            last = current
+            current = add_tup(current, dir)
+
+    return False
+
+
 def pt2():
-    pass
+    """
+    Find all posistions where adding an object would create a cycle
+    """
+
+    m = read_input(False)
+    start = None
+    grid = {}
+    rows = m.split("\n")
+    r_len = len(rows)
+    c_len = len(rows[0])
+    for r_idx, row in enumerate(rows):
+        for c_idx, char in enumerate(row):
+            cord = (r_idx, c_idx)
+            if char == "^":
+                start = cord
+            grid[cord] = char
+
+    assert start is not None
+    """
+    How would I brute force this? 
+
+    idea: place a blocker in every possible location and check for a cycle
+    """
+    max_path = r_len * c_len
+    count = 0
+    for cord in grid:
+        char = grid[cord]
+
+        if char == "#" or char == "^":
+            continue
+
+        grid[cord] = "#"
+        has_cycle = check_cycle(grid, start, max_path)
+
+        if has_cycle:
+            count += 1
+
+        grid[cord] = char
+    print(count)
 
 
 if __name__ == "__main__":
-    pt1()
+    pt2()
