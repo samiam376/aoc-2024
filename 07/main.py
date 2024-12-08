@@ -40,8 +40,37 @@ def pt1():
 
 
 def pt2():
-    pass
+    s = read_input(False).split("\n")[:-1]
+    parsed = []
+    for row in s:
+        total, rest = row.split(":")
+        nums = [int(n) for n in rest.split(" ") if n != ""]
+        parsed.append((int(total), nums))
+
+    final = 0
+    for total, nums in parsed:
+        is_true = False
+        for ops in product(["+", "*", "||"], repeat=len(nums) - 1):
+            agg, *rest = nums
+            assert len(rest) == len(ops)
+            for n, op in zip(rest, ops):
+                if op == "+":
+                    agg += n
+                elif op == "*":
+                    agg *= n
+                elif op == "||":
+                    agg = int(f"{agg}{n}")
+            if agg == total:
+                is_true = True
+                break
+        if is_true:
+            print(f"total: {total} is valid")
+            final += total
+        else:
+            print(f"total: {total} is not valid")
+
+    print(final)
 
 
 if __name__ == "__main__":
-    pt1()
+    pt2()
