@@ -5,18 +5,6 @@ def read_input(is_example: bool):
         return content
 
 
-directions = [
-    (-1, 0),
-    (-1, 1),
-    (0, 1),
-    (1, 1),
-    (1, 0),
-    (1, -1),
-    (0, -1),
-    (-1, -1),
-]
-
-
 def rotate(cord):
     """
     (-1, 0) -> (0, 1)
